@@ -46,10 +46,10 @@ University of Pittsburgh Robot and Automation Society's Line-Follower
     DP8          Sensor7  
     DP9          Sensor8
     
-    DP10           PWM A (right motor PWM) @ 31250Hz
-    DP11           PWM B (left  motor PWM) @ 31250Hz
+    DP10         PWM A (right motor PWM) @ 31250Hz
+    DP11         PWM B (left  motor PWM) @ 31250Hz
     
-    DP12          Servo signal
+    DP12         Servo signal
 
 
 
