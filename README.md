@@ -2,26 +2,26 @@
 
 University of Pittsburgh Robot and Automation Society's Line-Follower
 
-TO-DO: add sensor location to pin-out
-       add Sensor/H-bridge/motor/arduino specs
-       add SOLIDWORKS/CAD/3D-Printer files
-       add license
+    TO-DO: add sensor location to pin-out
+           add Sensor/H-bridge/motor/arduino specs
+           add SOLIDWORKS/CAD/3D-Printer files
+           add license
 
 
 **Part-List**
 
-Board:      Arduino Uno
-H-bridge:   TB6612FNG
-Motors:
-Battery:
-IR-sensors:
+    Board:      Arduino Uno
+    H-bridge:   TB6612FNG
+    Motors:
+    Battery:
+    IR-sensors:
 
 
 **Arduino Pin-out**
 
 
 **Arduino-GPIO/**
-   **7v battery**   **Element**
+**7v battery**   **Element**
 
      GND         Ground
      VCC         5v
@@ -35,22 +35,22 @@ IR-sensors:
 
 *Digital Pins
 
-  0. reserved for Arduino
-  1. reserved for Arduino
+  0. DP0 reserved for Arduino
+  1. DP1 reserved for Arduino
 
-  2. 2            Sensor1 (IR)
-  3. 3            Sensor2  |
-  4. 4            Sensor3  |
-  5. 5            Sensor4  |
-  6. 6            Sensor5  |
-  7. 7            Sensor6  |
-  8. 8            Sensor7  |
-  9. 9            Sensor8 (IR)
+  2. DP2          Sensor1 (IR)
+  3. DP3          Sensor2
+  4. DP4          Sensor3  
+  5. DP5          Sensor4  
+  6. DP6          Sensor5  
+  7. DP7          Sensor6  
+  8. DP8          Sensor7  
+  9. DP9          Sensor8 
 
- 10. 10           PWM A (right motor PWM) @ 31250Hz
- 11. 11           PWM B (left  motor PWM) @ 31250Hz
+ 10. DP10           PWM A (right motor PWM) @ 31250Hz
+ 11. DP11           PWM B (left  motor PWM) @ 31250Hz
 
- 12. 12          Servo signal
+ 12. DP12          Servo signal
 
 
 
