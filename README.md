@@ -20,8 +20,7 @@ University of Pittsburgh Robot and Automation Society's Line-Follower
 **Arduino Pin-out**
 
 
-**Arduino-GPIO/**
-**7v battery**   **Element**
+**Arduino-GPIO/7v battery**   **Element**
 
      GND         Ground
      VCC         5v
@@ -35,40 +34,37 @@ University of Pittsburgh Robot and Automation Society's Line-Follower
 
 *Digital Pins
 
-  0. DP0 reserved for Arduino
-  1. DP1 reserved for Arduino
-
-  2. DP2          Sensor1 (IR)
-  3. DP3          Sensor2
-  4. DP4          Sensor3  
-  5. DP5          Sensor4  
-  6. DP6          Sensor5  
-  7. DP7          Sensor6  
-  8. DP8          Sensor7  
-  9. DP9          Sensor8 
-
- 10. DP10           PWM A (right motor PWM) @ 31250Hz
- 11. DP11           PWM B (left  motor PWM) @ 31250Hz
-
- 12. DP12          Servo signal
+    0. DP0 reserved for Arduino
+    1. DP1 reserved for Arduino
+    2. DP2          Sensor1 (IR)
+    3. DP3          Sensor2
+    4. DP4          Sensor3  
+    5. DP5          Sensor4  
+    6. DP6          Sensor5  
+    7. DP7          Sensor6  
+    8. DP8          Sensor7  
+    9. DP9          Sensor8 
+   10. DP10           PWM A (right motor PWM) @ 31250Hz
+   11. DP11           PWM B (left  motor PWM) @ 31250Hz
+   12. DP12          Servo signal
 
 
 
 
 **H-Bridge-Pinout**
 
-  1. A01         right motor +
-  2. A02         right motor -
-  3. B01         left  motor +
-  4. B02         right motor -
-  5. VMOT        12v battery
-  6. GND         Ground
+    1. A01         right motor +
+    2. A02         right motor -
+    3. B01         left  motor +
+    4. B02         right motor -
+    5. VMOT        12v battery
+    6. GND         Ground
 
 
 
 
 **Servo-Pinout**
 
-  1. GPIO        Signal
-  2. 5v          V+
-  3. GND         V-
+    1. GPIO        Signal
+    2. 5v          V+
+    3. GND         V-
