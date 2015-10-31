@@ -34,8 +34,9 @@ University of Pittsburgh Robot and Automation Society's Line-Follower
 
 **Digital Pins**
 
-    DP0 reserved for Arduino
-    DP1 reserved for Arduino
+    DP0          reserved for Arduino
+    DP1          reserved for Arduino
+    
     DP2          Sensor1 (IR)
     DP3          Sensor2
     DP4          Sensor3  
@@ -43,9 +44,11 @@ University of Pittsburgh Robot and Automation Society's Line-Follower
     DP6          Sensor5  
     DP7          Sensor6  
     DP8          Sensor7  
-    DP9          Sensor8 
+    DP9          Sensor8
+    
     DP10           PWM A (right motor PWM) @ 31250Hz
     DP11           PWM B (left  motor PWM) @ 31250Hz
+    
     DP12          Servo signal
 
 
