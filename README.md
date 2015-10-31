@@ -59,7 +59,7 @@ University of Pittsburgh Robot and Automation Society's Line-Follower
     A01         right motor +
     A02         right motor -
     B01         left  motor +
-    B02         right motor -
+    B02         left  motor -
     VMOT        12v battery
     GND         Ground
 
