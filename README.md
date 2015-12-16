@@ -25,31 +25,28 @@ University of Pittsburgh Robot and Automation Society's Line-Follower
      GND         Ground
      VCC         5v
 
-**Analog Pins**
-    
-    A0           AIN1 (right motor +)
-    A1           AIN2 (right motor -)
-    A2           BIN1 (left  motor +)
-    A3           BIN2 (left  motor -)
+**Pins**
 
-**Digital Pins**
-
-    DP0          reserved for Arduino
-    DP1          reserved for Arduino
+    0          reserved for Arduino
+    1          reserved for Arduino
     
-    DP2          Sensor1 (IR)
-    DP3          Sensor2
-    DP4          Sensor3  
-    DP5          Sensor4  
-    DP6          Sensor5  
-    DP7          Sensor6  
-    DP8          Sensor7  
-    DP9          Sensor8
+    5         PWM A (right motor PWM) @ 31250Hz
+    6         PWM B (left  motor PWM) @ 31250Hz
     
-    DP10         PWM A (right motor PWM) @ 31250Hz
-    DP11         PWM B (left  motor PWM) @ 31250Hz
+    7          right motor -
+    8          right motor +
+    9          left  motor +
+    10         left  motor -
+    12         Servo signal
     
-    DP12         Servo signal
+    A0          Sensor1 (IR)
+    A1          Sensor2
+    A2          Sensor3  
+    A3          Sensor4  
+    A4          Sensor5  
+    A5          Sensor6  
+    A6          Sensor7  
+    A7          Sensor8
 
 
 
