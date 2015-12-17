@@ -80,21 +80,26 @@ void loop()
   }
   Serial.print("\t");
 
+  //Start from leftmost side, search till we find the point before the line starts (looking for zeros)
+  //If the line is right to the edge the value returned will be -1, if the line is not found it will be 7
   int left_side_of_line = 0;
   while (sensor_values & _BV(7 - left_side_of_line) && left_side_of_line < NUM_SENSORS) {
     left_side_of_line++;
   }
   left_side_of_line--; //Decrement by one so 0 = leftmost
 
+  //Start from rightmost side, search till we find the point before the line starts (looking for zeros)
+  //If the line is right to the edge the value returned will be 8, if the line is not found it will be 0
   int right_side_of_line = NUM_SENSORS-1;
   while (sensor_values & _BV(7 - right_side_of_line) && right_side_of_line >= 0) {
     right_side_of_line--;
   }
   right_side_of_line++;
 
-  int line_width = right_side_of_line - left_side_of_line;
-  float center = ((right_side_of_line + left_side_of_line) / 2.0) - 3.5;
+  int line_width = right_side_of_line - left_side_of_line; //Not used yet
+  float center = ((right_side_of_line + left_side_of_line) / 2.0) - 3.5;   //-3.5 = NUM_SENSORS-1/2
 
+  //Center will only be in 0.5 increments because of the resolution of our sensors
   float angle_sensors = atan_lookup[(int)(center*2) + NUM_SENSORS];
 
   Serial.print(left_side_of_line);
@@ -118,7 +123,7 @@ void loop()
 //        servo_position = constrain(servo_position + SERVO_KP*NUM_SENSORS, -90, 90);
 //        break;
 //    }
-//  } else if (left_side_of_line == -1 && right_side_of_line == NUM_SENSORS - 1) {
+//  } else if (left_side_of_line == -1 && right_side_of_line == NUM_SENSORS) {
 //    // entire view is black
 //    if (servo_position < 0) {
 //      servo_position += SERVO_KP*NUM_SENSORS;
@@ -151,6 +156,7 @@ void loop()
   //analogWrite(MOTORA_PWM_PIN, constrain(MAX_STRAIGHT_PWM + MOTOR_KP*servo_position + SENSOR_KP*angle_sensors, 0, MAX_TURN_PWM));
   //analogWrite(MOTORB_PWM_PIN, constrain(MAX_STRAIGHT_PWM - MOTOR_KP*servo_position + SENSOR_KP*angle_sensors, 0, MAX_TURN_PWM));
 
+  //Sum the servo position and the sensor position by seperate Kp's
   Serial.print(constrain(MAX_STRAIGHT_PWM + MOTOR_KP*servo_position + SENSOR_KP*angle_sensors, 0, MAX_TURN_PWM));
   Serial.print("\t");
   Serial.print(constrain(MAX_STRAIGHT_PWM - MOTOR_KP*servo_position + SENSOR_KP*angle_sensors, 0, MAX_TURN_PWM));
