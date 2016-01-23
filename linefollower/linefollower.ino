@@ -8,6 +8,7 @@
 #define MOTORL_2_PIN 10
 #define MOTORR_1_PIN 12
 #define MOTORR_2_PIN 11
+#define BUTTON_PIN 2
 
 #define SERVO_PIN 5
 
@@ -55,6 +56,14 @@ void setup()
   pinMode(13, OUTPUT);
   digitalWrite(13, 0);
 
+  //Setup the pushbutton pin
+  pinMode(BUTTON_PIN, INPUT);
+
+  //Delay until the button is pressed
+  delay(500);
+  while(digitalRead(BUTTON_PIN) == 1);
+  delay(500);
+
   pid_timer.begin(pid_interrupt, 1000);
 }
 
@@ -68,6 +77,21 @@ volatile bool serial_buf_ready = false;
 int serial_chars = 0;
 
 void loop() {
+
+  if(digitalRead(BUTTON_PIN) == 0){
+    digitalWrite(13, HIGH);
+    digitalWrite(MOTORL_1_PIN, 0);
+    digitalWrite(MOTORL_2_PIN, 0);
+    digitalWrite(MOTORR_1_PIN, 0);
+    digitalWrite(MOTORR_2_PIN, 0);
+    delay(200);
+    pid_timer.end();
+    setup();
+  }
+  else{
+    digitalWrite(13, LOW);
+  }
+  
   while (!serial_buf_ready) {}
 
   int serial_chars_printed = 0;
@@ -157,7 +181,7 @@ void pid_interrupt()
 
   if (print_locked) serial_chars += sprintf(serial_buf + serial_chars, "%f\t", servo_position);
 
-  //servo.write(servo_position + 90);
+  servo.write(servo_position + 90);
 
   digitalWrite(MOTORL_1_PIN, 0);
   digitalWrite(MOTORL_2_PIN, 1);
