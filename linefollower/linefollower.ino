@@ -1,30 +1,13 @@
+#include <EncoderMod.h>
 #include <Servo.h>
 
-#define SENSOR_FIRST_PIN A0
-#define NUM_SENSORS 8
-#define MOTORL_PWM_PIN 6
-#define MOTORR_PWM_PIN 9
-#define MOTORL_1_PIN 8
-#define MOTORL_2_PIN 10
-#define MOTORR_1_PIN 12
-#define MOTORR_2_PIN 11
-#define BUTTON_PIN 2
+#include "conf.h"
+#include "motors.h"
 
-#define SERVO_PIN 5
-
-#define MOTOR_KP 2
-#define MAX_STRAIGHT_PWM 80
-#define MAX_TURN_PWM 135
-
-#define SERVO_KP 0.04
-#define SERVO_HOLD_WIDTH 1
-#define SERVO_KI 0
-#define SERVO_KD 0.0009
-
-#define SERVO_INTEGRAL_CAP 0
-
-// time between interrupt calls (in us)
-#define DT 1000
+Encoder encoderRF(ENC_RF_1, ENC_RF_2);
+Encoder encoderLF(ENC_LF_1, ENC_LF_2);
+Encoder encoderRB(ENC_RB_1, ENC_RB_2); 
+Encoder encoderLB(ENC_LB_1, ENC_LB_2);
 
 #ifndef cbi
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
@@ -33,12 +16,15 @@
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
+int sensor_bar_pins[] = {IR1, IR2, IR3, IR4, IR5,
+                         IR6, IR7, IR8, IR9, IR10};
+
 Servo servo;
-float servo_position = 0;
-float servo_integral = 0;
+int servo_position = 0;
+int servo_integral = 0;
 int last_center = 0;
 
-float analog_cutoff = 150;
+int analog_cutoff = 150;
 
 uint16_t sensor_values = 0;
 
@@ -54,42 +40,99 @@ void setup()
 {
   Serial1.begin(9600);
 
+  // Set higher pwm frequency for smoother motor control.
+  analogWriteFrequency(MOTOR_LF_PWM, 46875);
+  analogWriteFrequency(MOTOR_RF_PWM, 46875);
+  analogWriteFrequency(MOTOR_LB_PWM, 46875);
+  analogWriteFrequency(MOTOR_RB_PWM, 46875);
+
+  // PWM resolution is 0-1023.
+  analogWriteResolution(10);
+
   // set up servo
   servo.attach(SERVO_PIN);
   servo.write(90);
 
-  for (int i = 0; i < NUM_SENSORS; i++) {
-    pinMode(SENSOR_FIRST_PIN + i, INPUT);
+  for (int i = 0; i < SENSOR_BAR_LEN; i++) {
+    pinMode(sensor_bar_pins[i], INPUT);
   }
 
-  pinMode(MOTORL_1_PIN, OUTPUT);
-  pinMode(MOTORL_2_PIN, OUTPUT);
-  pinMode(MOTORL_PWM_PIN, OUTPUT);
-  pinMode(MOTORR_1_PIN, OUTPUT);
-  pinMode(MOTORR_2_PIN, OUTPUT);
-  pinMode(MOTORR_PWM_PIN, OUTPUT);
+  pinMode(LEFT_SIDE_SENSOR_PIN, INPUT);
+  pinMode(RIGHT_SIDE_SENSOR_PIN, INPUT);
+
+  pinMode(MOTOR_LF_1, OUTPUT);
+  pinMode(MOTOR_LF_2, OUTPUT);
+  pinMode(MOTOR_LF_PWM, OUTPUT);
+  pinMode(MOTOR_RF_1, OUTPUT);
+  pinMode(MOTOR_RF_2, OUTPUT);
+  pinMode(MOTOR_RF_PWM, OUTPUT);
+  pinMode(MOTOR_LB_1, OUTPUT);
+  pinMode(MOTOR_LB_2, OUTPUT);
+  pinMode(MOTOR_LB_PWM, OUTPUT);
+  pinMode(MOTOR_RB_1, OUTPUT);
+  pinMode(MOTOR_RB_2, OUTPUT);
+  pinMode(MOTOR_RB_PWM, OUTPUT);
 
   // set up onboard led
   pinMode(13, OUTPUT);
   digitalWrite(13, 0);
 
   //Setup the pushbutton pin
-  pinMode(BUTTON_PIN, INPUT);
+  //pinMode(BUTTON_PIN, INPUT);
 
   //Delay until the button is pressed
-  delay(500);
-  while(digitalRead(BUTTON_PIN) == 1);
-  delay(500);
+  delay(1000);
+  //while(digitalRead(BUTTON_PIN) == 1);
+  //delay(500);
 
   // log initial sensor values
-  for (int i = 0; i < NUM_SENSORS; i++) {
-    Serial1.print(analogRead(SENSOR_FIRST_PIN + i));
+  for (int i = 0; i < SENSOR_BAR_LEN; i++) {
+    Serial1.print(analogRead(sensor_bar_pins[i]));
     Serial1.print("\t");
   }
   Serial1.println();
 
+  uint32_t t = 0;
+  while (millis() - t < 1000) {
+    motor_lf.Set(0.5, 0);
+    motor_rf.Set(0.5, 0);
+    motor_lb.Set(0.5, 0);
+    motor_rb.Set(0.5, 0);
+  }
+
+  t = 0;
+  while (millis() - t < 1000) {
+    motor_lf.Set(-0.5, 0);
+    motor_rf.Set(-0.5, 0);
+    motor_lb.Set(-0.5, 0);
+    motor_rb.Set(-0.5, 0);
+  }
+
+  t = 0;
+  while (millis() - t < 1000) {
+    motor_lf.Set(-0.5, 0);
+    motor_rf.Set(0.5, 0);
+    motor_lb.Set(-0.5, 0);
+    motor_rb.Set(0.5, 0);
+  }
+
+  t = 0;
+  while (millis() - t < 1000) {
+    motor_lf.Set(0.5, 0);
+    motor_rf.Set(-0.5, 0);
+    motor_lb.Set(0.5, 0);
+    motor_rb.Set(-0.5, 0);
+  }
+
+  motor_lf.Set(0.5, 0);
+  motor_rf.Set(-0.5, 0);
+  motor_lb.Set(0.5, 0);
+  motor_rb.Set(-0.5, 0);
+  
+  while (1) {}
+
   // start timed pid loop interrupt
-  pid_timer.begin(pid_interrupt, DT);
+//  pid_timer.begin(pid_interrupt, DT);
 }
 
 void loop() {
@@ -122,23 +165,23 @@ void pid_interrupt()
 
   // get photosensor data
   sensor_values = 0;
-  for (int i = 0; i < NUM_SENSORS; i++) {
-    sensor_values |= (analogRead(SENSOR_FIRST_PIN + i) < analog_cutoff) << i;
+  for (int i = 0; i < SENSOR_BAR_LEN; i++) {
+    sensor_values |= (analogRead(sensor_bar_pins[i]) < analog_cutoff) << i;
   }
 
   // log photosensor data
-  for (int i = 0; i < NUM_SENSORS; i++) {
+  for (int i = 0; i < SENSOR_BAR_LEN; i++) {
     if (print_locked) serial_chars += sprintf(serial_buf + serial_chars, "%i", (sensor_values >> i) & 1);
   }
   if (print_locked) serial_chars += sprintf(serial_buf + serial_chars, "\t");
 
   // find center of line in photosensor data
   int left_side_of_line = 0;
-  while (sensor_values & _BV(left_side_of_line) && left_side_of_line < NUM_SENSORS) {
+  while (sensor_values & _BV(left_side_of_line) && left_side_of_line < SENSOR_BAR_LEN) {
     left_side_of_line++;
   }
 
-  int right_side_of_line = NUM_SENSORS - 1;
+  int right_side_of_line = SENSOR_BAR_LEN - 1;
   while (sensor_values & _BV(right_side_of_line) && right_side_of_line >= 0) {
     right_side_of_line--;
   }
@@ -152,23 +195,23 @@ void pid_interrupt()
     // turn in the same direction we were turning before
     switch (servo_turn_direction) {
       case 'l':
-        center = -NUM_SENSORS;
+        center = -SENSOR_BAR_LEN;
         break;
       case 'r':
       default:
-        center = NUM_SENSORS;
+        center = SENSOR_BAR_LEN;
         break;
     }
-  } else if (left_side_of_line == 0 && right_side_of_line == NUM_SENSORS - 1) {
+  } else if (left_side_of_line == 0 && right_side_of_line == SENSOR_BAR_LEN - 1) {
     // entire view is black, send sensor back to center
     if (servo_position < 0) {
-      center = NUM_SENSORS;
+      center = SENSOR_BAR_LEN;
     } else {
-      center = -NUM_SENSORS;
+      center = -SENSOR_BAR_LEN;
     }
   } else {
     // line is in view
-    center = left_side_of_line + right_side_of_line - NUM_SENSORS + 1; 
+    center = left_side_of_line + right_side_of_line - SENSOR_BAR_LEN + 1; 
   }
 
   // log center data
@@ -205,24 +248,24 @@ void pid_interrupt()
   float right_motor_out = constrain(MAX_STRAIGHT_PWM - MOTOR_KP*(servo_position + 3 * center), -MAX_TURN_PWM, MAX_TURN_PWM);
 
   // write speeds to motors
-  if (left_motor_out > 0) {
-    digitalWrite(MOTORL_1_PIN, 0);
-    digitalWrite(MOTORL_2_PIN, 1);
-  } else {
-    digitalWrite(MOTORL_1_PIN, 1);
-    digitalWrite(MOTORL_2_PIN, 0);
-  }
+  //if (left_motor_out > 0) {
+  //  digitalWrite(MOTORL_1_PIN, 0);
+  //  digitalWrite(MOTORL_2_PIN, 1);
+  //} else {
+  //  digitalWrite(MOTORL_1_PIN, 1);
+  //  digitalWrite(MOTORL_2_PIN, 0);
+  //}
 
-  if (right_motor_out > 0) {
-    digitalWrite(MOTORR_1_PIN, 0);
-    digitalWrite(MOTORR_2_PIN, 1);
-  } else {
-    digitalWrite(MOTORR_1_PIN, 1);
-    digitalWrite(MOTORR_2_PIN, 0);
-  }
+  //if (right_motor_out > 0) {
+  //  digitalWrite(MOTORR_1_PIN, 0);
+  //  digitalWrite(MOTORR_2_PIN, 1);
+  //} else {
+  //  digitalWrite(MOTORR_1_PIN, 1);
+  //  digitalWrite(MOTORR_2_PIN, 0);
+  //}
 
-  analogWrite(MOTORL_PWM_PIN, abs(left_motor_out));
-  analogWrite(MOTORR_PWM_PIN, abs(right_motor_out));
+  //analogWrite(MOTORL_PWM_PIN, abs(left_motor_out));
+  //analogWrite(MOTORR_PWM_PIN, abs(right_motor_out));
 
   // log motor speeds
   if (print_locked) serial_chars += sprintf(serial_buf + serial_chars, "%f\t", left_motor_out);
@@ -232,14 +275,14 @@ void pid_interrupt()
   if (print_locked) serial_buf_ready = true;
 
   // check if stop button is pressed
-  if (digitalRead(BUTTON_PIN) == 0) {
-    //digitalWrite(13, HIGH);
-    digitalWrite(MOTORL_1_PIN, 0);
-    digitalWrite(MOTORL_2_PIN, 0);
-    digitalWrite(MOTORR_1_PIN, 0);
-    digitalWrite(MOTORR_2_PIN, 0);
-    pid_timer.end();
-    delay(200);
-    setup();
-  }
+  //if (digitalRead(BUTTON_PIN) == 0) {
+  //  //digitalWrite(13, HIGH);
+  //  digitalWrite(MOTORL_1_PIN, 0);
+  //  digitalWrite(MOTORL_2_PIN, 0);
+  //  digitalWrite(MOTORR_1_PIN, 0);
+  //  digitalWrite(MOTORR_2_PIN, 0);
+  //  pid_timer.end();
+  //  delay(200);
+  //  setup();
+  //}
 }
