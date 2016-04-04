@@ -38,7 +38,7 @@ int serial_chars = 0;
 IntervalTimer pid_timer;
 void setup()
 {
-  Serial1.begin(9600);
+  Serial.begin(9600);
 
   // Set higher pwm frequency for smoother motor control.
   analogWriteFrequency(MOTOR_LF_PWM, 46875);
@@ -87,20 +87,43 @@ void setup()
 
   // log initial sensor values
   for (int i = 0; i < SENSOR_BAR_LEN; i++) {
-    Serial1.print(analogRead(sensor_bar_pins[i]));
-    Serial1.print("\t");
+    Serial.print(analogRead(sensor_bar_pins[i]));
+    Serial.print("\t");
   }
-  Serial1.println();
+  Serial.println();
 
-  uint32_t t = 0;
+  uint32_t t = millis();
+
+  //while(1){
+  //  Serial.println(-encoderRB.stepRate() * 1000000 * MM_PER_STEP / 1000);
+  //}
+  
+  while (millis() - t < 100) {
+    motor_lf.Set(2.0, encoderLF.stepRate() * 1000000 * MM_PER_STEP / 1000);
+    motor_rf.Set(2.0, encoderRF.stepRate() * 1000000 * MM_PER_STEP / 1000);
+    motor_lb.Set(2.0, encoderLB.stepRate() * 1000000 * MM_PER_STEP / 1000);
+    motor_rb.Set(2.0, encoderRB.stepRate() * 1000000 * MM_PER_STEP / 1000);
+    delay(10);
+  }
+  motor_rb.Set(0.0, encoderRB.stepRate() * 1000000 * MM_PER_STEP / 1000);
+
+  t = millis();
+  while (millis() - t < 100) {
+    motor_lf.Set(-2.0, encoderLF.stepRate() * 1000000 * MM_PER_STEP / 1000);
+    motor_rf.Set(-2.0, encoderRF.stepRate() * 1000000 * MM_PER_STEP / 1000);
+    motor_lb.Set(-2.0, encoderLB.stepRate() * 1000000 * MM_PER_STEP / 1000);
+    motor_rb.Set(-2.0, encoderRB.stepRate() * 1000000 * MM_PER_STEP / 1000);
+    delay(10);
+  }
+  t = millis();
   while (millis() - t < 1000) {
-    motor_lf.Set(0.5, 0);
-    motor_rf.Set(0.5, 0);
-    motor_lb.Set(0.5, 0);
-    motor_rb.Set(0.5, 0);
+    Serial.println(encoderRB.stepRate() * 1000000 * MM_PER_STEP / 1000);
+    delay(50);
   }
 
-  t = 0;
+  while(1);
+  
+  t = millis();
   while (millis() - t < 1000) {
     motor_lf.Set(-0.5, 0);
     motor_rf.Set(-0.5, 0);
@@ -108,7 +131,7 @@ void setup()
     motor_rb.Set(-0.5, 0);
   }
 
-  t = 0;
+  t = millis();
   while (millis() - t < 1000) {
     motor_lf.Set(-0.5, 0);
     motor_rf.Set(0.5, 0);
@@ -116,7 +139,7 @@ void setup()
     motor_rb.Set(0.5, 0);
   }
 
-  t = 0;
+  t = millis();
   while (millis() - t < 1000) {
     motor_lf.Set(0.5, 0);
     motor_rf.Set(-0.5, 0);
@@ -142,14 +165,14 @@ void loop() {
 
   while (serial_chars_printed < serial_chars) {
     for (int i = 0; serial_chars_printed < serial_chars && i < 300; i++) {
-      Serial1.write(serial_buf[serial_chars_printed]);
+      Serial.write(serial_buf[serial_chars_printed]);
       serial_chars_printed++;
     }
     delay(30);
   }
 
-  Serial1.write('\r');
-  Serial1.write('\n');
+  Serial.write('\r');
+  Serial.write('\n');
   serial_chars = 0;
   serial_buf_ready = false;
 }

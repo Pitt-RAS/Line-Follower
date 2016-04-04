@@ -2,14 +2,6 @@
 #include "conf.h"
 #include "motors.h"
 
-// input desired force and current speed
-static float idealMotorOutput(float force, float velocity) {
-  float required_current, back_emf;
-  required_current = force / FORCE_PER_AMP;
-  back_emf = velocity / VELOCITY_PER_VBEMF;
-  return ((required_current * RATED_INTERNAL_RESISTANCE + back_emf) / BATTERY_VOLTAGE);
-}
-
 Motor motor_lf (MOTOR_LF_1, MOTOR_LF_2, MOTOR_LF_PWM);
 Motor motor_rf (MOTOR_RF_1, MOTOR_RF_2, MOTOR_RF_PWM);
 Motor motor_lb (MOTOR_LB_1, MOTOR_LB_2, MOTOR_LB_PWM);
@@ -27,7 +19,6 @@ Motor::Motor(int motor_1_pin, int motor_2_pin, int motor_pwm_pin) {
 
 void Motor::Set(float accel, float current_velocity) {
   float force;
-  float speed;
   int pin_state;
   int speed_raw;
 
@@ -38,8 +29,9 @@ void Motor::Set(float accel, float current_velocity) {
   } else {
     force = (ROBOT_MASS * accel) / NUMBER_OF_MOTORS;
   }
-
-  speed = idealMotorOutput(force, current_velocity);
+  float required_current = force / FORCE_PER_AMP;
+  float back_emf = current_velocity / VELOCITY_PER_VBEMF;
+  float speed = ((required_current * RATED_INTERNAL_RESISTANCE + back_emf) / BATTERY_VOLTAGE);
   speed = constrain(speed, -1, 1);
 
   speed_raw = abs((int)(round(PWM_SPEED_STEPS * speed)));
@@ -49,7 +41,9 @@ void Motor::Set(float accel, float current_velocity) {
   } else {
     pin_state = LOW;
   }
-
+  Serial.print(current_velocity);
+  Serial.print("   ");
+  Serial.println(speed_raw * BATTERY_VOLTAGE /1024.0);
   digitalWrite(pin_1_, pin_state);
   digitalWrite(pin_2_, pin_state ^ 1);
   analogWrite(pin_pwm_, speed_raw);
