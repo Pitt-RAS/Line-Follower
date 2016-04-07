@@ -7,9 +7,6 @@
 #include "motors.h"
 #include "PIDController.h"
 
-enum Direction { forward, backward };
-enum MovementType {charge, search_arc, deploy_ramps, stop};
-
 class Motion
 {
 private:
@@ -21,12 +18,9 @@ private:
 	PIDController pid_lb;
 	PIDController pid_rf;
 	PIDController pid_rb;
-
-	
-	MovementType movement_state;
 	
 	//Private motion functions
-	void setVelRaw(Direction r, int pwmr, Direction l, int pwml);
+	void setVelRaw(bool r, int pwmr, bool l, int pwml);
 
 public:
   Motion();
