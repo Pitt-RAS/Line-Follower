@@ -3,11 +3,8 @@
 
 #include "conf.h"
 #include "motors.h"
-
-Encoder encoderRF(ENC_RF_1, ENC_RF_2);
-Encoder encoderLF(ENC_LF_1, ENC_LF_2);
-Encoder encoderRB(ENC_RB_1, ENC_RB_2); 
-Encoder encoderLB(ENC_LB_1, ENC_LB_2);
+#include "PIDController.h"
+#include "motion.h"
 
 #ifndef cbi
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
@@ -36,6 +33,7 @@ volatile bool serial_buf_ready = false;
 int serial_chars = 0;
 
 IntervalTimer pid_timer;
+Motion motion;
 void setup()
 {
   Serial.begin(9600);
@@ -52,6 +50,7 @@ void setup()
   // set up servo
   servo.attach(SERVO_PIN);
   servo.write(90);
+ 
 
   for (int i = 0; i < SENSOR_BAR_LEN; i++) {
     pinMode(sensor_bar_pins[i], INPUT);
@@ -92,65 +91,13 @@ void setup()
   }
   Serial.println();
 
-  uint32_t t = millis();
-
-  //while(1){
-  //  Serial.println(-encoderRB.stepRate() * 1000000 * MM_PER_STEP / 1000);
-  //}
   
-  while (millis() - t < 100) {
-    motor_lf.Set(2.0, encoderLF.stepRate() * 1000000 * MM_PER_STEP / 1000);
-    motor_rf.Set(2.0, encoderRF.stepRate() * 1000000 * MM_PER_STEP / 1000);
-    motor_lb.Set(2.0, encoderLB.stepRate() * 1000000 * MM_PER_STEP / 1000);
-    motor_rb.Set(2.0, encoderRB.stepRate() * 1000000 * MM_PER_STEP / 1000);
-    delay(10);
+  motion.setVel(0, 10000);
+    uint32_t t = millis();
+  while(millis() - t < 2000){
+	  //motion.setVel(, 0);
   }
-  motor_rb.Set(0.0, encoderRB.stepRate() * 1000000 * MM_PER_STEP / 1000);
-
-  t = millis();
-  while (millis() - t < 100) {
-    motor_lf.Set(-2.0, encoderLF.stepRate() * 1000000 * MM_PER_STEP / 1000);
-    motor_rf.Set(-2.0, encoderRF.stepRate() * 1000000 * MM_PER_STEP / 1000);
-    motor_lb.Set(-2.0, encoderLB.stepRate() * 1000000 * MM_PER_STEP / 1000);
-    motor_rb.Set(-2.0, encoderRB.stepRate() * 1000000 * MM_PER_STEP / 1000);
-    delay(10);
-  }
-  t = millis();
-  while (millis() - t < 1000) {
-    Serial.println(encoderRB.stepRate() * 1000000 * MM_PER_STEP / 1000);
-    delay(50);
-  }
-
-  while(1);
-  
-  t = millis();
-  while (millis() - t < 1000) {
-    motor_lf.Set(-0.5, 0);
-    motor_rf.Set(-0.5, 0);
-    motor_lb.Set(-0.5, 0);
-    motor_rb.Set(-0.5, 0);
-  }
-
-  t = millis();
-  while (millis() - t < 1000) {
-    motor_lf.Set(-0.5, 0);
-    motor_rf.Set(0.5, 0);
-    motor_lb.Set(-0.5, 0);
-    motor_rb.Set(0.5, 0);
-  }
-
-  t = millis();
-  while (millis() - t < 1000) {
-    motor_lf.Set(0.5, 0);
-    motor_rf.Set(-0.5, 0);
-    motor_lb.Set(0.5, 0);
-    motor_rb.Set(-0.5, 0);
-  }
-
-  motor_lf.Set(0.5, 0);
-  motor_rf.Set(-0.5, 0);
-  motor_lb.Set(0.5, 0);
-  motor_rb.Set(-0.5, 0);
+  motion.setVel(0, 0);
   
   while (1) {}
 

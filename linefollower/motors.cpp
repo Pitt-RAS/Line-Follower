@@ -2,11 +2,6 @@
 #include "conf.h"
 #include "motors.h"
 
-Motor motor_lf (MOTOR_LF_1, MOTOR_LF_2, MOTOR_LF_PWM);
-Motor motor_rf (MOTOR_RF_1, MOTOR_RF_2, MOTOR_RF_PWM);
-Motor motor_lb (MOTOR_LB_1, MOTOR_LB_2, MOTOR_LB_PWM);
-Motor motor_rb (MOTOR_RB_1, MOTOR_RB_2, MOTOR_RB_PWM);
-
 Motor::Motor(int motor_1_pin, int motor_2_pin, int motor_pwm_pin) {
   pin_1_ = motor_1_pin;
   pin_2_ = motor_2_pin;
@@ -41,10 +36,22 @@ void Motor::Set(float accel, float current_velocity) {
   } else {
     pin_state = LOW;
   }
-  Serial.print(current_velocity);
-  Serial.print("   ");
-  Serial.println(speed_raw * BATTERY_VOLTAGE /1024.0);
+  //Serial.print(current_velocity);
+  //Serial.print("   ");
+  //Serial.println(speed_raw * BATTERY_VOLTAGE /1024.0);
   digitalWrite(pin_1_, pin_state);
   digitalWrite(pin_2_, pin_state ^ 1);
   analogWrite(pin_pwm_, speed_raw);
+}
+
+void Motor::SetRaw(bool forward, int speed_raw) {
+	if(forward){
+		digitalWrite(pin_1_, HIGH);
+		digitalWrite(pin_2_, LOW);
+	}
+	else {
+		digitalWrite(pin_1_, LOW);
+		digitalWrite(pin_2_, HIGH);
+	}
+	analogWrite(pin_pwm_, speed_raw);
 }

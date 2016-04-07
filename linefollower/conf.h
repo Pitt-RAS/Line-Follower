@@ -85,4 +85,10 @@
 #define SERVO_KD 0.0009
 #define SERVO_INTEGRAL_CAP 0
 
+#define KP_VELOCITY 1
+#define KI_VELOCITY 0
+#define KD_VELOCITY 0
+
+#define DISTANCE_BETWEEN_WHEELS (108.0/1000.0) //108mm
+
 #endif

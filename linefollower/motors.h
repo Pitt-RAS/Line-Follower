@@ -8,6 +8,7 @@ class Motor {
   public:
     Motor(int motor_1_pin, int motor_2_pin, int motor_pwm_pin);
     void Set(float accel, float current_velocity);
+	void SetRaw(bool forward, int pwm);
 };
 
 extern Motor motor_lf, motor_lb, motor_rf, motor_rb;
