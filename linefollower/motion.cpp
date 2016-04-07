@@ -53,6 +53,12 @@ void Motion::setVel(float v, float w){
 	
 	int pwml = abs(vl) * (1024/5.0);
 	int pwmr = abs(vr) * (1024/5.0);
+	
+	Serial.print("pwm:   ");
+	Serial.print(vl * (1024/5.0));
+	Serial.print("  ");
+	Serial.print(vr * (1024/5.0));
+	Serial.println();
 
 	//For now just set the pwm values
 	setVelRaw(directionr, pwmr, directionl, pwml);
