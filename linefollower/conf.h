@@ -51,6 +51,8 @@
 #define SERVO_PIN 25
 
 // robot characteristics
+#define NUM_SENSORS 10
+
 #define ROBOT_MASS 0.229 // kg
 #define NUMBER_OF_MOTORS 4
 #define STEPS_PER_MOTOR_REV 12// the number of encoder steps we get per wheel revolution
