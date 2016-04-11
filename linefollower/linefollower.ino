@@ -5,7 +5,7 @@
 #include "motors.h"
 #include "PIDController.h"
 #include "motion.h"
-#include "ProxSense.h"
+#include "SensorBar.h"
 
 #ifndef cbi
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
@@ -37,7 +37,7 @@ int serial_chars = 0;
 
 IntervalTimer pid_timer;
 Motion motion;
-ProxSense sensor_bar(sensor_bar_pins, sensor_bar_weights, 500);
+SensorBar sensor_bar(sensor_bar_pins, sensor_bar_weights, 500);
 
 void setup()
 {

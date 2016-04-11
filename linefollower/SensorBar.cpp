@@ -27,7 +27,7 @@ float SensorBar::generateAngle()
   float angle;
   int num_active = 0;
   for (int i = 0; i < NUM_SENSORS; i++) {
-    if (bar_[i] < setpoint) {
+    if (bar_[i] < setpoint_) {
       num_active++;
       sum += weight_[i];
     }
