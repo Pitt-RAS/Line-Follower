@@ -36,7 +36,7 @@ float SensorBar::generateAngle()
   if (num_active > 0) {
     angle = (float)sum / num_active;
   } else {
-    angle = PROXIMITY_INACTIVE; //Set to some error that we will never reach
+    angle = SENSORBAR_NOLINE_VALUE; //Set to some error that we will never reach
   }
   Serial.println(angle);
 
