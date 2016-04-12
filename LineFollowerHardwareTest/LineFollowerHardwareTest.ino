@@ -2,7 +2,7 @@
 #include <EncoderMod.h>
 
 //Uncomment or uncomment to test things, I recommend only doing one at a time
-//#define TEST_MOTORS_ENCODERS
+#define TEST_MOTORS_ENCODERS
 //#define TEST_SERVO
 //#define TEST_IR_BAR
 
@@ -123,7 +123,7 @@ void loop()
 #endif
 
 #ifdef TEST_MOTORS_ENCODERS
-  //Test Motor RF
+  /*//Test Motor RF
   analogWrite(MOTOR_RF_PWM, 255);
   digitalWrite(MOTOR_RF_1, HIGH);
   digitalWrite(MOTOR_RF_2, LOW);
@@ -153,7 +153,7 @@ void loop()
   Serial.print("LF:");
   Serial.println(encoderLF.stepRate()*10000.0);
   delay(1000);
-  analogWrite(MOTOR_LF_PWM, 0);
+  analogWrite(MOTOR_LF_PWM, 0);*/
 
 //  //Test Motor RB
   analogWrite(MOTOR_RB_PWM, 255);
@@ -169,7 +169,7 @@ void loop()
   Serial.print("RB:");
   Serial.println(encoderRB.stepRate()*10000.0);
   delay(1000);  analogWrite(MOTOR_RB_PWM, 0);
-
+/*
   //Test Motor LB
   analogWrite(MOTOR_LB_PWM, 255);
   digitalWrite(MOTOR_LB_1, HIGH);
@@ -184,7 +184,7 @@ void loop()
   Serial.print("LB:");
   Serial.println(encoderLB.stepRate()*10000.0);
   delay(1000);
-  analogWrite(MOTOR_LB_PWM, 0);
+  analogWrite(MOTOR_LB_PWM, 0);*/
 #endif
 
   

@@ -99,8 +99,18 @@ void loop()
   } else {
     servo_turn_direction = 'l';
   }
+  Serial.print(servo_position);
+  delay(10);
 
   servo.write(servo_position);
   motion.setVel(MAX_FORWARD_SPEED, servo_position);
   motion.update();
+  
+  if(digitalRead(BUTTON_PIN) == 1){
+	motion.stop();
+	delay(3000);
+    while(digitalRead(BUTTON_PIN) == 0);
+	delay(1000);
+  }
+
 }

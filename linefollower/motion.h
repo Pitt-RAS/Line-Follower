@@ -32,6 +32,9 @@ class Motion
 
   //Must be called a set rate
   void update();
+  
+  //STOP THE HORSES
+  void stop();
 };
  
 #endif

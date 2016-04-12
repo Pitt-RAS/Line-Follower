@@ -38,6 +38,10 @@ void Motion::setVel(float velocity, float rotational_velocity)
   target_right_velocity_ = velocity - rotation_offset;
 }
 
+void Motion::stop(){
+	setVelRaw(true, 0, true, 0, true, 0, true, 0);
+}
+
 // Private methods
 void Motion::setVelRaw(bool rf, int pwm_rf, bool lf, int pwm_lf,
                        bool rb, int pwm_rb, bool lb, int pwm_lb)
