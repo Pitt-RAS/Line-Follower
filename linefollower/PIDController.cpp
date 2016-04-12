@@ -19,14 +19,14 @@ PIDController::PIDController(float tempKP, float tempKI, float tempKD, float tem
 float PIDController::Calculate(float current_value, float target_value) {
   float error = current_value - target_value;
 
-  i_term += ki * error * elapsed_time;
+  i_term += ki * error * elapsed_time / 1000000;
   i_term = constrain(i_term, i_lower_bound, i_upper_bound);
 
   if (isnan(last_value)) {
     last_value = current_value;
   }
 
-  float output = -kp * error - i_term + kd * (-current_value + last_value) / elapsed_time;
+  float output = -kp * error - i_term + kd * (-current_value + last_value) / elapsed_time * 1000000;
   last_value = current_value;
 
   elapsed_time = 0;
