@@ -1,35 +1,37 @@
-#ifndef MICROMOUSE_MOTION_H_
-#define MICROMOUSE_MOTION_H_
+#ifndef LINEFOLLOWER_MOTION_H_
+#define LINEFOLLOWER_MOTION_H_
 
 #include "Arduino.h"
-#include "conf.h"
-#include "encoding.h"
+
 #include "motors.h"
 #include "PIDController.h"
 
 class Motion
 {
-private:
-	Motor motor_lf;
-	Motor motor_rf;
-	Motor motor_lb;
-	Motor motor_rb;
-	PIDController pid_lf;
-	PIDController pid_lb;
-	PIDController pid_rf;
-	PIDController pid_rb;
-	
-	//Private motion functions
-	void setVelRaw(bool r, int pwmr, bool l, int pwml);
+ private:
+  Motor motor_lf_;
+  Motor motor_rf_;
+  Motor motor_lb_;
+  Motor motor_rb_;
+  PIDController pid_lf_;
+  PIDController pid_lb_;
+  PIDController pid_rf_;
+  PIDController pid_rb_;
 
-public:
+  float target_left_velocity_, target_right_velocity_;
+
+  //Private motion functions
+  void setVelRaw(bool rf, int pwm_rf, bool lf, int pwm_lf,
+                         bool rb, int pwm_rb, bool lb, int pwm_lb);
+
+ public:
   Motion();
-	void setVel(float v, float w);
 
-	
-	//Must be called a set rate
-	void update();
+  // velocity in m/s, rotational velocity in rad/s
+  void setVel(float velocity, float rotational_velocity);
 
- };
+  //Must be called a set rate
+  void update();
+};
  
 #endif

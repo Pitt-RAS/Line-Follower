@@ -3,9 +3,6 @@
 
 #include <Arduino.h>
 
-// time between interrupt calls (in us)
-#define DT 1000
-
 // pin numbers
 #define MOTOR_LB_1 3
 #define MOTOR_LB_2 2
@@ -50,6 +47,8 @@
 
 #define SERVO_PIN 25
 
+#define BUTTON_PIN 29
+
 // robot characteristics
 #define NUM_SENSORS 10
 
@@ -77,19 +76,18 @@
 #define FRICTION_FORCE (RATED_FREERUN_CURRENT * FORCE_PER_AMP + 0.10) // Newtons (0.08 calculated Newtons from motor/gearbox)  amount of force opposing motion in robot including rolling resistance, sliding, gearing
 
 // control tuning
-#define MOTOR_KP 2
-#define MAX_STRAIGHT_PWM 80
-#define MAX_TURN_PWM 135
+#define MAX_FORWARD_SPEED 1
 
-#define SERVO_KP 0.04
-#define SERVO_HOLD_WIDTH 1
-#define SERVO_KI 0
-#define SERVO_KD 0.0009
-#define SERVO_INTEGRAL_CAP 0
+#define SERVO_KP 0
+#define SERVO_KI 4
+#define SERVO_KD 0
+#define SERVO_INTEGRAL_CAP 1000
+#define SERVO_MAX_ERROR 6
 
-#define KP_VELOCITY 1
+#define KP_VELOCITY 10
 #define KI_VELOCITY 0
 #define KD_VELOCITY 0
+#define VELOCITY_INTEGRAL_CAP 10000
 
 #define DISTANCE_BETWEEN_WHEELS (108.0/1000.0) //108mm
 #define SENSORBAR_NOLINE_VALUE 999999999

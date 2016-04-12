@@ -2,17 +2,16 @@
 #include "conf.h"
 #include "motors.h"
 
-Motor::Motor(int motor_1_pin, int motor_2_pin, int motor_pwm_pin) {
-  pin_1_ = motor_1_pin;
-  pin_2_ = motor_2_pin;
-  pin_pwm_ = motor_pwm_pin;
-
+Motor::Motor(int motor_1_pin, int motor_2_pin, int motor_pwm_pin,
+             int encoder_1_pin, int encoder_2_pin)
+    : pin_1_(motor_1_pin), pin_2_(motor_2_pin), pin_pwm_(motor_pwm_pin),
+      encoder_(encoder_1_pin, encoder_2_pin) {
   pinMode(pin_1_, OUTPUT);
   pinMode(pin_2_, OUTPUT);
   pinMode(pin_pwm_, OUTPUT);
 }
 
-void Motor::Set(float accel, float current_velocity) {
+void Motor::set(float accel, float current_velocity) {
   float force;
   int pin_state;
   int speed_raw;
@@ -36,22 +35,35 @@ void Motor::Set(float accel, float current_velocity) {
   } else {
     pin_state = LOW;
   }
-  //Serial.print(current_velocity);
-  //Serial.print("   ");
-  //Serial.println(speed_raw * BATTERY_VOLTAGE /1024.0);
+
   digitalWrite(pin_1_, pin_state);
   digitalWrite(pin_2_, pin_state ^ 1);
   analogWrite(pin_pwm_, speed_raw);
 }
 
-void Motor::SetRaw(bool forward, int speed_raw) {
-	if(forward){
-		digitalWrite(pin_1_, HIGH);
-		digitalWrite(pin_2_, LOW);
-	}
-	else {
-		digitalWrite(pin_1_, LOW);
-		digitalWrite(pin_2_, HIGH);
-	}
-	analogWrite(pin_pwm_, speed_raw);
+void Motor::setRaw(bool forward, int speed_raw)
+{
+  if (forward) {
+    digitalWrite(pin_1_, HIGH);
+    digitalWrite(pin_2_, LOW);
+  } else {
+    digitalWrite(pin_1_, LOW);
+    digitalWrite(pin_2_, HIGH);
+  }
+  analogWrite(pin_pwm_, speed_raw);
+}
+
+float Motor::getPosition()
+{
+  return encoder_.extrapolate() * MM_PER_STEP;
+}
+
+void Motor::setPosition(float new_position)
+{
+  encoder_.write((int32_t)rint(new_position / MM_PER_STEP));
+}
+
+float Motor::getVelocity()
+{
+  return encoder_.stepRate() * 1000 * MM_PER_STEP;
 }
