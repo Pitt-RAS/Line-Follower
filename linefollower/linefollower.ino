@@ -2,40 +2,22 @@
 #include <Servo.h>
 
 #include "conf.h"
-#include "motors.h"
 #include "PIDController.h"
 #include "motion.h"
 #include "SensorBar.h"
-
-#ifndef cbi
-#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
-#endif
-#ifndef sbi
-#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
-#endif
 
 int sensor_bar_pins[] = {IR2, IR3, IR4, IR5, IR6,
                          IR7, IR8, IR9, IR10 , IR11};
 
 int sensor_bar_weights[] = {-5, -4, -3, -2, -1,
-							1, 2, 3, 4, 5};
+                            1, 2, 3, 4, 5};
+
 Servo servo;
-int servo_position = 0;
-int servo_integral = 0;
-int last_center = 0;
-
-int analog_cutoff = 150;
-
-uint16_t sensor_values = 0;
+PIDController servo_pid (SERVO_KP, SERVO_KI, SERVO_KD, SERVO_INTEGRAL_CAP);
 
 // 'l' for left, 'r' for right, 's' for straight
 char servo_turn_direction = 's';
 
-char serial_buf[600];
-volatile bool serial_buf_ready = false;
-int serial_chars = 0;
-
-IntervalTimer pid_timer;
 Motion motion;
 SensorBar sensor_bar(sensor_bar_pins, sensor_bar_weights, 500);
 
@@ -82,36 +64,43 @@ void setup()
   digitalWrite(13, 0);
 
   //Setup the pushbutton pin
-  //pinMode(BUTTON_PIN, INPUT);
+  pinMode(BUTTON_PIN, INPUT);
 
   //Delay until the button is pressed
   delay(1000);
-  //while(digitalRead(BUTTON_PIN) == 1);
-  //delay(500);
+  while(digitalRead(BUTTON_PIN) == 0);
+  delay(500);
 
   // log initial sensor values
   for (int i = 0; i < SENSOR_BAR_LEN; i++) {
     Serial.print(analogRead(sensor_bar_pins[i]));
     Serial.print("\t");
   }
-  //while(1){
-	//Serial.println(sensor_bar.readAngle());
-	//delay(100);
-  //}
-  
-  //while (1) {}
-
-  // start timed pid loop interrupt
-//  pid_timer.begin(pid_interrupt, DT);
 }
 
-void loop() {
+void loop()
+{
   float error = sensor_bar.readAngle();
-  if(error != PROXIMITY_INACTIVE){
-	motion.setVel(0, 4.0*error);
+
+  if (error == SENSORBAR_NOLINE_VALUE) {
+    if (servo_turn_direction == 'r') {
+      error = SERVO_MAX_ERROR;
+    } else {
+      error = -SERVO_MAX_ERROR;
+    }
   }
-  else {
-	  motion.setVel(0, 0);
+
+  int servo_position = servo_pid.Calculate(error, 0);
+
+  if (error > 0) {
+    servo_turn_direction = 'r';
+  } else if (error == 0) {
+    servo_turn_direction = 's';
+  } else {
+    servo_turn_direction = 'l';
   }
-  delay(100);
+
+  servo.write(servo_position);
+  motion.setVel(MAX_FORWARD_SPEED, servo_position);
+  motion.update();
 }
