@@ -45,6 +45,9 @@
 #define IR9 A7
 #define IR10 A8
 #define IR11 A9
+
+//test
+#define testpin A14
  
 Servo myservo;  // create servo object to control a servo 
                 // twelve servo objects can be created on most boards
@@ -60,6 +63,9 @@ Encoder encoderRF(ENC_RF_1, ENC_RF_2);
 Encoder encoderLF(ENC_LF_1, ENC_LF_2);
 Encoder encoderRB(ENC_RB_1, ENC_RB_2); 
 Encoder encoderLB(ENC_LB_1, ENC_LB_2);
+
+//test
+int test_pin = testpin;
 
 void setup() 
 { 
@@ -121,6 +127,9 @@ void loop()
     } 
   }
 #endif
+
+//test
+Serial.print(analogRead(test_pin));
 
 #ifdef TEST_MOTORS_ENCODERS
   /*//Test Motor RF
