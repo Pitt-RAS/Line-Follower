@@ -2,8 +2,8 @@
 #include <EncoderMod.h>
 
 //Uncomment or uncomment to test things, I recommend only doing one at a time
-#define TEST_MOTORS_ENCODERS
-//#define TEST_SERVO
+//#define TEST_MOTORS_ENCODERS
+#define TEST_SERVO
 //#define TEST_IR_BAR
 
 #define servo_delay 1
@@ -113,7 +113,7 @@ void loop()
 #endif
 
 #ifdef TEST_SERVO
-  //Test servo
+/*  //Test servo
   for(int end = 0; end < 150; end+=5 ){
     for(pos = 0; pos <= end; pos += 1) // goes from 0 degrees to 180 degrees 
     {                                  // in steps of 1 degree 
@@ -126,10 +126,16 @@ void loop()
       delay(servo_delay);                       // waits 15ms for the servo to reach the position 
     } 
   }
+  */
+
+Serial.print("A14:");
+Serial.println(analogRead(test_pin));
+delay(10);
+analogWrite(0, 50);
 #endif
 
 //test
-Serial.print(analogRead(test_pin));
+
 
 #ifdef TEST_MOTORS_ENCODERS
   /*//Test Motor RF
