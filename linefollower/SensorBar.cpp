@@ -13,12 +13,12 @@ void SensorBar::update()
 {
   for (int i = 0; i < NUM_SENSORS; i++) {
     bar_[i] = analogRead(bar_pin_[i]);
-    Serial.print(i);
-    Serial.print(": ");
-    Serial.print(bar_[i]);
-    Serial.print(" ");
+//    Serial.print(i);
+//    Serial.print(": ");
+//    Serial.print(bar_[i]);
+//    Serial.print(" ");
   }
-  Serial.println();
+//  Serial.println();
 }
 
 float SensorBar::generateAngle()
@@ -38,7 +38,7 @@ float SensorBar::generateAngle()
   } else {
     angle = NAN; //Set to some error that we will never reach
   }
-  Serial.println(angle);
+//  Serial.println(angle);
 
   return angle;
 }
