@@ -27,7 +27,7 @@ float SensorBar::generateAngle()
   float angle;
   int num_active = 0;
   for (int i = 0; i < NUM_SENSORS; i++) {
-    if (bar_[i] < setpoint_) {
+    if (bar_[i] > setpoint_) {
       num_active++;
       sum += weight_[i];
     }
@@ -36,7 +36,7 @@ float SensorBar::generateAngle()
   if (num_active > 0) {
     angle = (float)sum / num_active;
   } else {
-    angle = SENSORBAR_NOLINE_VALUE; //Set to some error that we will never reach
+    angle = NAN; //Set to some error that we will never reach
   }
   Serial.println(angle);
 

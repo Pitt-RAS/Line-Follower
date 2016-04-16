@@ -82,7 +82,7 @@ void loop()
 {
   float error = sensor_bar.readAngle();
 
-  if (error == SENSORBAR_NOLINE_VALUE) {
+  if (isnan(error)) {
     if (servo_turn_direction == 'r') {
       error = SERVO_MAX_ERROR;
     } else {
