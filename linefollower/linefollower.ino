@@ -76,6 +76,15 @@ void setup()
     Serial.print(analogRead(sensor_bar_pins[i]));
     Serial.print("\t");
   }
+
+  if (analogRead(28)*8.33/791 < 7.3) {
+    while (1) {
+      digitalWrite(13, 1);
+      delay(100);
+      digitalWrite(13, 0);
+      delay(300);
+    }
+  }
 }
 
 PIDController turn_pid (KP_TURN, KI_TURN, KD_TURN);
@@ -115,7 +124,17 @@ void loop()
   if (digitalRead(BUTTON_PIN) == 1) {
 	motion.stop();
 	delay(3000);
-    while(digitalRead(BUTTON_PIN) == 0);
+    while(digitalRead(BUTTON_PIN) == 0) {
+      motion.stop();
+    }
 	delay(1000);
+    if (analogRead(28)*8.33/791 < 7.3) {
+      while (1) {
+        digitalWrite(13, 1);
+        delay(100);
+        digitalWrite(13, 0);
+        delay(300);
+      }
+    }
   }
 }
