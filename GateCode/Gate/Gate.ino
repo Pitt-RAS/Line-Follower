@@ -1,5 +1,7 @@
 #include <Time.h>
 #include <stdlib.h>
+#define MIN_VOLT_OFFSET 10
+
 unsigned long stopWatch;
 int startGate;
 int finishGate;
@@ -14,8 +16,8 @@ void setup() {
   Serial.begin(9600);
   stopWatch=0;
   calibrate();
-  minVoltS=250;
-  minVoltF=250;
+  //minVoltS=250;
+  //minVoltF=250;
   finishGate=0;
   startGate=analogRead(A0);
   midTime=millis();
@@ -36,7 +38,7 @@ void loop() {
     startGate=analogRead(A0);
     if((midTime+30)<millis()){
       midTime=millis();
-      Serial.println("READY");
+      Serial.println("READY ");
     }
   }
 
@@ -76,8 +78,8 @@ void calibrate(){
     aveVolt2=aveVolt2+analogRead(A1);
     delay(15);
   }
-  minVoltS=aveVolt1/200-100;
+  minVoltS=(aveVolt1/200)- MIN_VOLT_OFFSET;
   Serial.print(String(minVoltS));
-  minVoltF=aveVolt2/200-100;
+  minVoltF=(aveVolt2/200)- MIN_VOLT_OFFSET;
   Serial.println(" "+String(minVoltF));
 }
