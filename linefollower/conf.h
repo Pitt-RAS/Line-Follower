@@ -52,6 +52,7 @@
 // robot characteristics
 #define NUM_SENSORS 10
 
+#define SENSOR_BAR_DISTANCE 0.07
 #define ROBOT_MASS 0.229 // kg
 #define NUMBER_OF_MOTORS 4
 #define STEPS_PER_MOTOR_REV 12// the number of encoder steps we get per wheel revolution
@@ -76,17 +77,21 @@
 #define FRICTION_FORCE (RATED_FREERUN_CURRENT * FORCE_PER_AMP + 0.10) // Newtons (0.08 calculated Newtons from motor/gearbox)  amount of force opposing motion in robot including rolling resistance, sliding, gearing
 
 // control tuning
-#define MAX_FORWARD_SPEED 1
+#define MAX_FORWARD_SPEED 1.7
 
 #define SERVO_KP 0
-#define SERVO_KI 4
+#define SERVO_KI 50
 #define SERVO_KD 0
-#define SERVO_INTEGRAL_CAP 1000
+#define SERVO_INTEGRAL_CAP 75
 #define SERVO_MAX_ERROR 6
+
+#define KP_TURN 4.5
+#define KI_TURN 0
+#define KD_TURN 300
 
 #define KP_VELOCITY 10
 #define KI_VELOCITY 0
-#define KD_VELOCITY 0
+#define KD_VELOCITY 2000
 #define VELOCITY_INTEGRAL_CAP 10000
 
 #define DISTANCE_BETWEEN_WHEELS (108.0/1000.0) //108mm

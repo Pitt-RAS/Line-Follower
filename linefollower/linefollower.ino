@@ -78,6 +78,7 @@ void setup()
   }
 }
 
+PIDController turn_pid (KP_TURN, KI_TURN, KD_TURN);
 void loop()
 {
   float error = sensor_bar.readAngle();
@@ -90,7 +91,12 @@ void loop()
     }
   }
 
-  int servo_position = servo_pid.Calculate(error, 0);
+  //int servo_position = servo_pid.Calculate(error, 0);
+  //if (servo_position > 75) {
+  //  servo_position = 75;
+  //} else if (servo_position < -75) {
+  //  servo_position = -75;
+  //}
 
   if (error > 0) {
     servo_turn_direction = 'r';
@@ -99,18 +105,17 @@ void loop()
   } else {
     servo_turn_direction = 'l';
   }
-  Serial.print(servo_position);
-  delay(10);
 
-  servo.write(servo_position);
-  motion.setVel(MAX_FORWARD_SPEED, servo_position);
+//  servo.write(servo_position + 90);
+  float rotation = turn_pid.Calculate(-error, 0);
+  float forward_vel = MAX_FORWARD_SPEED - 0.030*abs(rotation);
+  motion.setVel(forward_vel, rotation);
   motion.update();
   
-  if(digitalRead(BUTTON_PIN) == 1){
+  if (digitalRead(BUTTON_PIN) == 1) {
 	motion.stop();
 	delay(3000);
     while(digitalRead(BUTTON_PIN) == 0);
 	delay(1000);
   }
-
 }
