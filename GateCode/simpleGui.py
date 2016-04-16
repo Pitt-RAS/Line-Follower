@@ -1,14 +1,31 @@
 import tkinter
 import serial
 import time
+from sys import platform as _platform
+if _platform == "linux" or _platform == "linux2":
+    connection = "/dev/ttyUSB%s"
+elif platform.system() == "Windows":
+    connection = "COM%s"
+else:
+    connection =  "COM%s"
+    
 exist=0
 root = tkinter.Tk()
+
+# make it cover the entire screen
+w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+root.overrideredirect(1)
+root.geometry("%dx%d+0+0" % (w, h))
+
+root.focus_set() # <-- move focus to this widget
+root.bind("<Escape>", lambda e: e.widget.quit())
+
 root.configure(background="blue")
 canvas = tkinter.Canvas(root,width=500,height=250,bd=0,bg="black")
 canvas.create_text(10,10,text="hello")
 canvas.pack()
 
-ports=['COM%s' % (i+1) for i in range(256)]
+ports=[connection % (i+1) for i in range(256)]
 for port in ports:
     try:    
         ser = serial.Serial(port,9600,timeout=0)

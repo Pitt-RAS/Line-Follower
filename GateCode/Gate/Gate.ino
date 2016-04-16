@@ -1,12 +1,14 @@
-#include <Time.h>
+#include <Time.h>z
 #include <stdlib.h>
-#define MIN_VOLT_OFFSET 10
+#define MIN_VOLTS_OFFSET 6
+#define MIN_VOLTF_OFFSET 6
 
 unsigned long stopWatch;
 int startGate;
 int finishGate;
 int minVoltS;
 int minVoltF;
+int button = 2;
 unsigned long startTime;
 unsigned long endTime;
 unsigned long midTime;
@@ -20,21 +22,15 @@ void setup() {
   //minVoltF=250;
   finishGate=0;
   startGate=analogRead(A0);
+  pinMode(button,INPUT);
   midTime=millis();
-  while(startGate>minVoltS){
-    startGate=analogRead(A0);
-    if((midTime+30)<millis()){
-      midTime=millis();
-      Serial.println("READY");
-    }
-  }
 }
 
 void loop() {
   startGate=0;
   midTime=millis();
 
-  while(startGate<minVoltS){
+  while(startGate>minVoltS){
     startGate=analogRead(A0);
     if((midTime+30)<millis()){
       midTime=millis();
@@ -56,6 +52,12 @@ void loop() {
       midTime=millis()-startTime;
       Serial.println(String(stopWatch));
     }
+        Serial.println("loop");
+        Serial.print("minVoltF:");
+        Serial.print(minVoltF);
+        Serial.print(" finishGate ");
+        Serial.println(finishGate);
+
   }
 
   stopWatch=millis()-startTime;
@@ -64,6 +66,8 @@ void loop() {
     if((midTime+30)<millis()){
       midTime=millis();
       Serial.println("Finish "+String(stopWatch));
+      while(digitalRead(button) == HIGH){}
+      break;
     }
     startGate=analogRead(A0);
   }
@@ -78,8 +82,8 @@ void calibrate(){
     aveVolt2=aveVolt2+analogRead(A1);
     delay(15);
   }
-  minVoltS=(aveVolt1/200)- MIN_VOLT_OFFSET;
+  minVoltS=(aveVolt1/200)- MIN_VOLTS_OFFSET;
   Serial.print(String(minVoltS));
-  minVoltF=(aveVolt2/200)- MIN_VOLT_OFFSET;
+  minVoltF=(aveVolt2/200)- MIN_VOLTF_OFFSET;
   Serial.println(" "+String(minVoltF));
 }
