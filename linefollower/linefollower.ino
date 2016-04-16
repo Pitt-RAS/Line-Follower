@@ -19,7 +19,7 @@ PIDController servo_pid (SERVO_KP, SERVO_KI, SERVO_KD, SERVO_INTEGRAL_CAP);
 char servo_turn_direction = 's';
 
 Motion motion;
-SensorBar sensor_bar(sensor_bar_pins, sensor_bar_weights, 500);
+SensorBar sensor_bar(sensor_bar_pins, sensor_bar_weights, 700);
 
 void setup()
 {
