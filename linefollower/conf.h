@@ -77,7 +77,7 @@
 #define FRICTION_FORCE (RATED_FREERUN_CURRENT * FORCE_PER_AMP + 0.10) // Newtons (0.08 calculated Newtons from motor/gearbox)  amount of force opposing motion in robot including rolling resistance, sliding, gearing
 
 // control tuning
-#define MAX_FORWARD_SPEED 2.1 //works with 2.1 2.0
+#define MAX_FORWARD_SPEED 2.5 //works with 2.1 2.0
 
 #define SERVO_KP 0
 #define SERVO_KI 50
@@ -85,7 +85,7 @@
 #define SERVO_INTEGRAL_CAP 75
 #define SERVO_MAX_ERROR 6
 
-#define KP_TURN 4.6 //works with 4.5
+#define KP_TURN 9.6 //works with 4.5
 #define KI_TURN 0
 #define KD_TURN 300
 
