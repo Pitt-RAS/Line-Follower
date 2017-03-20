@@ -1,5 +1,7 @@
 #RAS-Line-Follower
 
+Use legacy-encoder-mod branch from https://github.com/Pitt-RAS/Encoder
+
 University of Pittsburgh Robot and Automation Society's Line-Follower
 
     TO-DO: add sensor location to pin-out
